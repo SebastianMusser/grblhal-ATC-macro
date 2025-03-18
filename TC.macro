@@ -1,0 +1,115 @@
+; ************** 	DECLARE VARIABLES *********************************************************
+#<y_travel_pocket> = 60				; Verfahrweg in Tasche / aus Tasche heraus
+#<z_travel_pocket> = 60				; Z Verfahrweg auf das tool / vom tool weg
+#<safe_z> = -29
+#<pocket_offset> =	60						; abstand der slots in X richtung
+#<pocket_one_x> = -606							; Koordinaten des ersten slots
+#<pocket_y> = -421									; Y Koordinaten der slots
+#<pocket_z> = -168									; Z Koordinaten der slots
+#<pocket_count> = 5
+#<toolSensor_input> = 1               ; 0=tool, 1=notool 
+#<drawbarSensor_input> = 2            ; 0=activated/pressurized 1=not activated
+
+;#<x_new_tool>									;Position des ausgewaehlten werkzeugs
+;#<x_current_tool>							;Position des ausgewaehlten werkzeugs
+;#<manual_x> = -518
+;#<manual_y> = -577
+;#<measure_start_z> = 
+;#<seek_feed> =
+;#<measure_x> = 
+;#<measure_y> =
+;#<measure_x_probe> = 
+;#<measure_y_probe> =
+#<pocket_feedrate> = 400
+;#<x_load> = 
+#<y_outsidePocket> = [#<pocket_y> - #<y_travel_pocket>]
+(debug, yInfrontPocket set to #<y_outsidePocket>) 
+#<z_abovePocket> = [#<pocket_z> + #<z_travel_pocket>]
+(debug, z_abovePocket set to #<z_abovePocket>)
+(debug, current tool is #<_current_tool>)
+(debug, new tool is #<_selected_tool>)
+;*********************************************************************************************
+
+;************** 	VALIDATION ****************************************************************
+o100 if [#<_selected_tool> LT 0]            ;wenn neues tool groesser als 0
+  (debug, Selected Tool: #<_selected_tool> is out of range. Tool change aborted. Program paused.)
+  M0
+  M99
+o100 elseif [#<_selected_tool> EQ #<_current_tool>]
+  (debug, Current tool selected. Tool change bypassed.)
+  M99
+o100 elseif[<#_selected_tool> EQ 99]
+  (debug, Probe selected)
+  M99  
+o100 endif
+(debug, valid Tool change. Lets proceed!)
+;************** 	END VALIDATION *****************************************************************
+
+;************** BEGIN SETUP *********************************************************************
+M5																												;Turn off spindle and coolant
+M9
+G90  																											;Activate absolute distance mode
+
+;Set tool locations
+#<x_new_tool> = [[[#<_selected_tool> - 1] * #<pocket_offset> ] + #<pocket_one_x>]
+(debug, new Tool X set to #<x_new_tool>)
+(debug, Berechnung: selected tool  #<_selected_tool> - 1 mal pocketoffset #<pocket_offset> + pocketoneX #<pocket_one_x>)
+
+#<x_current_tool> = [[[#<_current_tool> - 1] * #<pocket_offset> ] + #<pocket_one_x>]
+(debug, current Tool X set to #<x_current_tool>)
+
+G53 G0 Z[#<safe_z>]																				
+(debug, Moved to safe clearance)
+; *************** END SETUP ****************
+
+; ************** BEGIN UNLOAD **************
+
+o200 if [#<_current_tool> GT 0]                                       ;Unload only if we have a tool in the spindle. Else skip to load
+  M66 P[#<toolSensor_input>] L0                                       ;check if we really have a physical tool in the spindle
+  (debug, Read tool status: #5399) 
+  
+  o210 if [#5399 EQ 1                                                  ;nur wenn wir auch wirklich ein tool geladen haben
+    (debug, We have no tool in the spindle but a valid tool is set. ABORT)
+    M99  
+  o210 endif
+
+    G53 G0 X[#<x_current_tool>] 
+    G53 G0 Y[#<y_outsidePocket>] 
+    G53 G0 Z[#<pocket_z>]  ;fahre vor den slot
+    G53 G1 Y[#<pocket_y>]  F[#<pocket_feedrate>]						          	;fahre in den slot
+    ;M64 P1                                                             ;release tool
+    G4 P2                                                               ;wait a second for pressure to build up
+    M66 P[#<drawbarSensor_input>] L0                                       ;sensorstatus auslesen (0=tool, 1=notool)
+    (debug, Read input: #5399) 	
+    o220 if [#5399 EQ 1]   
+      (debug, something is wrong - drawbar not activated. ABORT)
+      M99
+    o220 endif
+    G4 P1																											          ;Gedenksekunde																						
+    G53 G1 Z[#<z_abovePocket>] F1000													  ;spindel nach oben fahren - weg vom tool
+    M65 P1																										;ventil wird geschlossen
+
+o200 endif 
+; *************** END UNLOAD ***************
+
+; *************** BEGIN LOAD ***************
+o210 if [#<_selected_tool GT 0]                             ;dont load if tool0 was called.
+  G53 G0 X[#<x_new_tool>] Y[#<pocket_y>] Z[#<z_abovePocket>]
+  (debug, Move over pocket #<_selected_tool>)
+  ;M64 P1 																										;spannzange oeffnen
+  G4 P0.5	
+  G53 G1 Z[#<pocket_z>] F400	
+  G4 P1
+  M65 P1 																										;spannzange schliessen / ventil schliessen
+  G4 P1
+  ;M64 P0																										;air return aktivieren fuer 5 sek
+  G4 P5
+  M65 P0
+  ;HIER MUSS NOCH EINE ABFRAGE DES SENSORS REIN																							
+  G53 G1 Y[#<y_outsidePocket>]  F[#<pocket_feedrate>]     ;fahre aus der tasche heraus
+0210 endif
+; Update the current tool.
+M61 Q[#<_selected_tool>]
+G4 P0
+(debug, Loaded tool #<_current_tool>)
+; *************** END LOAD *****************
