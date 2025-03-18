@@ -30,7 +30,7 @@
 (debug, new tool is #<_selected_tool>)
 ;*********************************************************************************************
 
-;************** 	VALIDATION ****************************************************************
+;**************VALIDATION ****************************************************************
 o100 if [#<_selected_tool> LT 0]            ;wenn neues tool groesser als 0
   (debug, Selected Tool: #<_selected_tool> is out of range. Tool change aborted. Program paused.)
   M0
@@ -43,9 +43,9 @@ o100 elseif[<#_selected_tool> EQ 99]
   M99  
 o100 endif
 (debug, valid Tool change. Lets proceed!)
-;************** 	END VALIDATION *****************************************************************
+;**************END VALIDATION *****************************************************************
 
-;************** BEGIN SETUP *********************************************************************
+;**************BEGIN SETUP *********************************************************************
 M5																												;Turn off spindle and coolant
 M9
 G90  																											;Activate absolute distance mode
