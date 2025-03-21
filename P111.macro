@@ -18,7 +18,7 @@ G43.1 Z0
 (debug, G43.1 Z offset removed)
 o100 if [#5220 EQ 1]                    ;calculate z offset in G54
   #<_z_offset> = [#5213 + #5223]
-o100 elseif [#5220 EQ 2]                ;calculate z offset in G54
+o100 elseif [#5220 EQ 2]                ;calculate z offset in G55
   #<_z_offset> = [#5213 + #5243]
 o100 elseif [#5220 EQ 3]                ;calculate z offset in G56
   #<_z_offset> = [#5213 + #5263]
