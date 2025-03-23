@@ -14,21 +14,13 @@
 #<_seek_feedrate> = 500
 #<_retract_distance> = 5
 #<_fine_feedrate> = 100
-;#<x_new_tool>									;Position des ausgewaehlten werkzeugs
-;#<x_current_tool>							;Position des ausgewaehlten werkzeugs
-;#<manual_x> = -518
-;#<manual_y> = -577
-;#<seek_feed> =
-#<measure_x> = -56
-#<measure_y> = -35.7
-;#<measure_x_probe> = 
-;#<measure_y_probe> =
+;#<manualToolchange_x> = -518
+;#<manualToolchange_y> = -577
+#<toolsetter_x> = -58
+#<toolsetter_y> = -34.7
 #<pocket_feedrate> = 1000
-;#<x_load> = 
 #<y_outsidePocket> = [#<pocket_y> - #<y_travel_pocket>]
-;(debug, yInfrontPocket set to #<y_outsidePocket>) 
 #<z_abovePocket> = [#<pocket_z> + #<z_travel_pocket>]
-;(debug, z_abovePocket set to #<z_abovePocket>)
 (debug, current tool is #<_current_tool>)
 (debug, new tool is #<_selected_tool>)
 ;*********************************************************************************************
@@ -180,7 +172,7 @@ o600 if [#<_selected_tool> NE 0]
 
   G53 G90 G0 Z[#<safe_z>]
   (debug, Move to Z safe)
-  G53 G0 X[#<measure_x>] Y[#<measure_y>]
+  G53 G0 X[#<toolsetter_x>] Y[#<toolsetter_y>]
   (debug, Move to tool setter XY)
   G53 G0 Z[#<measure_start_z>]
   (debug, Down to Z seek start)
