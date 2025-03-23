@@ -14,8 +14,8 @@
 #<_seek_feedrate> = 500
 #<_retract_distance> = 5
 #<_fine_feedrate> = 100
-;#<manualToolchange_x> = -518
-;#<manualToolchange_y> = -577
+#<manualToolchange_x> = -318
+#<manualToolchange_y> = -577
 #<toolsetter_x> = -58
 #<toolsetter_y> = -34.7
 #<pocket_feedrate> = 1000
@@ -57,7 +57,23 @@ G53 G0 Z[#<safe_z>]
 
 ; ************** BEGIN UNLOAD **************
 
-o200 if [#<_current_tool> GT 0]                                       ;Unload only if we have a tool in the spindle. Else skip to load
+o200 if [#<_current_tool> GT #<pocket_count>]                                       ;Unload only if we have a tool in the spindle. Else skip to load
+(debug, manual toolchange necessary)
+    G53 G0 X[#<manualToolchange_x>] 
+    G53 G0 Y[#<manualToolchange_y>]
+    (debug, preparing manual toolchange)
+    M0
+    G4 P1
+    M64 P1
+    G4 P3
+    M65 P1
+    G4 P1
+    M64 P0
+    G4 P3
+    M65 P0
+    (debug, waiting for user input to proceed)
+    M0 
+o200 else
   M66 P[#<toolSensor_input>] L0                                       ;check if we really have a physical tool in the spindle
   ;(debug, Read tool status: #5399) 
   
