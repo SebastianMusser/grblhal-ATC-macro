@@ -57,20 +57,20 @@ G53 G0 Z[#<safe_z>]
 
 ; ************** BEGIN UNLOAD **************
 
-o200 if [#<_current_tool> GT #<pocket_count>]                                       ;Unload only if we have a tool in the spindle. Else skip to load
-(debug, manual toolchange necessary)
+o200 if [#<_current_tool> GT #<pocket_count>]                   
+    (debug, manual toolchange necessary)
     G53 G0 X[#<manualToolchange_x>] 
     G53 G0 Y[#<manualToolchange_y>]
-    (debug, preparing manual toolchange)
+    (debug, preparing manual unload)
     M0
     G4 P1
     M64 P1
     G4 P3
     M65 P1
-    G4 P1
-    M64 P0
-    G4 P3
-    M65 P0
+ ;   G4 P1
+ ;   M64 P0
+ ;   G4 P3
+ ;   M65 P0
     (debug, waiting for user input to proceed)
     M0 
 o200 else
