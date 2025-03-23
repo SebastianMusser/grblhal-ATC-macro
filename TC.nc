@@ -109,7 +109,22 @@ o200 endif
 
 ; *************** BEGIN LOAD ***************
     (debug, We start loading tool #<_selected_tool>)
-o300 if [#<_selected_tool> GT 0]                             ;dont load if tool0 was called.
+o300 if [#<_selected_tool> GT #<pocket_count>]                   
+    (debug, manual toolchange necessary)
+    G53 G0 X[#<manualToolchange_x>] 
+    G53 G0 Y[#<manualToolchange_y>]
+    (debug, preparing manual load)
+    M0
+    G4 P1
+    M64 P1
+    G4 P3
+    M65 P1
+    G4 P1
+    M64 P0
+    G4 P3
+    M65 P0
+    (debug, waiting for user input to proceed)
+    M0 
 
   G53 G0 X[#<x_new_tool>] Y[#<pocket_y>] Z[#<z_abovePocket>]
     (debug, Move over pocket #<_selected_tool>)
