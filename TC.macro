@@ -3,22 +3,21 @@
 #<z_travel_pocket> = 50				; Z Verfahrweg auf das tool / vom tool weg
 #<safe_z> = -29
 #<pocket_offset> =	61.2						; abstand der slots in X richtung
-#<pocket_one_x> = -696.380							; Koordinaten des ersten slots
-#<pocket_y> = -299.480									; Y Koordinaten der slots
-#<pocket_z> = -196.792									; Z Koordinaten der slots
+#<pocket_one_x> = -799.490							; Koordinaten des ersten slots
+#<pocket_y> = -74.060									; Y Koordinaten der slots
+#<pocket_z> = -195.196									; Z Koordinaten der slots
 #<pocket_count> = 5
 #<toolSensor_input> = 1               ; 0=tool, 1=notool 
 #<drawbarSensor_input> = 2            ; 0=activated/pressurized 1=not activated
-#<measure_start_z> = -50
+#<measure_start_z> = -100
 #<_seek_distance> = 100 
 #<_seek_feedrate> = 500
-#<_retract_distance> = 10
+#<_retract_distance> = 5
 #<_fine_feedrate> = 100
 ;#<x_new_tool>									;Position des ausgewaehlten werkzeugs
 ;#<x_current_tool>							;Position des ausgewaehlten werkzeugs
 ;#<manual_x> = -518
 ;#<manual_y> = -577
-;#<measure_start_z> = 
 ;#<seek_feed> =
 #<measure_x> = -56
 #<measure_y> = -35.7
@@ -95,7 +94,7 @@ o200 if [#<_current_tool> GT 0]                                       ;Unload on
       o220 elseif [#5399 EQ 0]
         (debug, drawbar actuated. Lets proceed) 
       o220 endif																						
-    G53 G1 Z[#<z_abovePocket>] F[#<pocket_feedrate>]										;spindel nach oben fahren - weg vom tool
+    G53 G0 Z[#<z_abovePocket>] ;F[#<pocket_feedrate>]										;spindel nach oben fahren - weg vom tool
     G4 P0
     M65 P1																										;ventil wird geschlossen
 		(debug, shut off AIR IN)
