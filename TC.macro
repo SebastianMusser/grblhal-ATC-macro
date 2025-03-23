@@ -21,8 +21,6 @@
 #<pocket_feedrate> = 1000
 #<y_outsidePocket> = [#<pocket_y> - #<y_travel_pocket>]
 #<z_abovePocket> = [#<pocket_z> + #<z_travel_pocket>]
-(debug, current tool is #<_current_tool>)
-(debug, new tool is #<_selected_tool>)
 ;*********************************************************************************************
 
 ;************** 	VALIDATION ****************************************************************
