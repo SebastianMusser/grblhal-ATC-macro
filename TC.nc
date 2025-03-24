@@ -98,9 +98,9 @@ o300 endif
 
 ; *************** BEGIN LOAD ***************
 o400 if [#<_selected_tool> EQ 0]  
-    (debug, Tool 0 selected - spindle remains empty. Do Nothing)
+	(debug, Tool 0 selected - spindle remains empty. Do Nothing)
 o400 elseif [#<_selected_tool> GT #<pocket_count>]   
-	G53 G0 Z[#<safe_z>]		                
+G53 G0 Z[#<safe_z>]		                
 	(debug, manual tool load necessary)
     	G53 G0 X[#<manualToolchange_x>] 
     	G53 G0 Y[#<manualToolchange_y>]
@@ -110,12 +110,12 @@ o400 elseif [#<_selected_tool> GT #<pocket_count>]
     	M64 P1 
     	G4 P3
     	M65 P1
-    G4 P1
-    M64 P0
-    G4 P3
-    M65 P0
-    (debug, Tool loaded. Confirm to proceed.)
-    M0 
+    	G4 P1
+    	M64 P0
+    	G4 P3
+    	M65 P0
+    	(debug, Tool loaded. Confirm to proceed.)
+    	M0 
 o400 else
 	(debug, loading a tool with a pocket)
   G53 G0 X[#<x_new_tool>] Y[#<pocket_y>] 
