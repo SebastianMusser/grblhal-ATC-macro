@@ -37,7 +37,7 @@ o100 elseif [#<_selected_tool> EQ #<_current_tool>]
 ;  M99  
 o100 endif
 (debug, valid Tool change. Lets proceed!)
-;************** 	END VALIDATION *****************************************************************
+;**************END VALIDATION *****************************************************************
 
 ;************** BEGIN SETUP *********************************************************************
 
@@ -104,7 +104,7 @@ G53 G0 Z[#<safe_z>]
 	(debug, manual tool load necessary)
     	G53 G0 X[#<manualToolchange_x>] 
     	G53 G0 Y[#<manualToolchange_y>]
-    	(debug, Confirm to start manual loading)
+    	(debug, Confirm to start manual loading.....)
     	M0
     	G4 P1
     	M64 P1 
