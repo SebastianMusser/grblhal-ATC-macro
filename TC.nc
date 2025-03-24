@@ -107,7 +107,7 @@ o400 elseif [#<_selected_tool> GT #<pocket_count>]
     	(debug, Confirm to start manual loading)
     	M0
     	G4 P1
-    	M64 P1
+    	M64 P1 
     	G4 P3
     	M65 P1
     G4 P1
