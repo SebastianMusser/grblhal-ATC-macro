@@ -97,8 +97,9 @@ o300 endif
 ; *************** END UNLOAD ***************
 
 ; *************** BEGIN LOAD ***************
-    (debug, We start loading tool #<_selected_tool>)
-o400 if [#<_selected_tool> GT #<pocket_count>]   
+o400 if [#<_selected_tool> EQ 0]  
+    (debug, Tool 0 selected - spindle remains empty. Do Nothing)
+o400 elseif [#<_selected_tool> GT #<pocket_count>]   
 		G53 G0 Z[#<safe_z>]		                
     (debug, manual tool load necessary)
     G53 G0 X[#<manualToolchange_x>] 
@@ -162,54 +163,34 @@ o600 if [#<_selected_tool> NE 0]
   (debug, G43.1 Z offset removed)
   o610 if [#5220 EQ 1]
     #<_z_offset> = [#5213 + #5223]
-    (debug, Z Offset Calculated in G54: #<_z_offset>)
   o610 elseif [#5220 EQ 2]
     #<_z_offset> = [#5213 + #5243]
-    (debug, Z Offset Calculated in G55: #<_z_offset>)
   o610 elseif [#5220 EQ 3]
     #<_z_offset> = [#5213 + #5263]
-    (debug, Z Offset Calculated in G56: #<_z_offset>)
   o610 elseif [#5220 EQ 4]
     #<_z_offset> = [#5213 + #5283]
-    (debug, Z Offset Calculated in G57: #<_z_offset>)
   o610 elseif [#5220 EQ 5]
     #<_z_offset> = [#5213 + #5303]
-    (debug, Z Offset Calculated in G58: #<_z_offset>)
   o610 elseif [#5220 EQ 6]
     #<_z_offset> = [#5213 + #5323]
-    (debug, Z Offset Calculated in G59: #<_z_offset>)
   o610 elseif [#5220 EQ 7]
     #<_z_offset> = [#5213 + #5343]
-    (debug, Z Offset Calculated in G59.1: #<_z_offset>)
   o610 elseif [#5220 EQ 8]
     #<_z_offset> = [#5213 + #5363]
-    (debug, Z Offset Calculated in G59.2: #<_z_offset>)
   o610 elseif [#5220 EQ 9]
     #<_z_offset> = [#5213 + #5383]
-    (debug, Z Offset Calculated in G59.3: #<_z_offset>)
   o610 endif
 
   G53 G90 G0 Z[#<safe_z>]
-  (debug, Move to Z safe)
   G53 G0 X[#<toolsetter_x>] Y[#<toolsetter_y>]
-  (debug, Move to tool setter XY)
   G53 G0 Z[#<measure_start_z>]
-  (debug, Down to Z seek start)
   G38.2 G91 Z[#<_seek_distance> * -1] F[#<_seek_feedrate>]
-  (debug, Probe Z down seek mode)
   G0 G91 Z[#<_retract_distance>]
-  (debug, Retract from tool setter)
   G38.2 G91 Z[[#<_retract_distance> + 1] * -1] F[#<_fine_feedrate>]
-  (debug, Probe Z down set mode)
   G53 G0 G90 Z[#<safe_z>]
-  (debug, Triggered Work Z: #5063)
-
   #<_adjust_z> = [#5063 + #<_z_offset>]
-  (debug, Triggered Mach Z: #<_adjust_z>)
   G4 P0
-    (debug, Ref Mach Pos: 0, Work Z before G43.1: #<_z>)
     G43.1 Z[#<_adjust_z>]
-    (debug, Ref Mach Pos: 0, Work Z after G43.1: #<_z>)
   $TLR
   (debug, TLR set)
 o600 else
