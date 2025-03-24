@@ -100,7 +100,7 @@ o300 endif
 o400 if [#<_selected_tool> EQ 0]  
     (debug, Tool 0 selected - spindle remains empty. Do Nothing)
 o400 elseif [#<_selected_tool> GT #<pocket_count>]   
-		G53 G0 Z[#<safe_z>]		                
+	  G53 G0 Z[#<safe_z>]		                
     (debug, manual tool load necessary)
     G53 G0 X[#<manualToolchange_x>] 
     G53 G0 Y[#<manualToolchange_y>]
