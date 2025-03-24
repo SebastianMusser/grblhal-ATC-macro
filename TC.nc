@@ -14,7 +14,7 @@
 #<_seek_feedrate> = 500
 #<_retract_distance> = 5
 #<_fine_feedrate> = 100
-#<manualToolchange_x> = -318
+#<manualToolchange_x> = -500
 #<manualToolchange_y> = -577
 #<toolsetter_x> = -58
 #<toolsetter_y> = -34.7
@@ -61,19 +61,16 @@ o200 if [#<_current_tool> GT #<pocket_count>]
     (debug, manual toolchange necessary)
     G53 G0 X[#<manualToolchange_x>] 
     G53 G0 Y[#<manualToolchange_y>]
-    (debug, preparing manual unload)
+    (debug, Confirm to start manual unloading)
     M0
     G4 P1
     M64 P1
     G4 P3
     M65 P1
- ;   G4 P1
- ;   M64 P0
- ;   G4 P3
- ;   M65 P0
-    (debug, waiting for user input to proceed)
+    (debug, Tool unloaded. Confirm to proceed)
     M0 
 o200 else
+  (debug, unloading tool with pocket)
   M66 P[#<toolSensor_input>] L0                                       ;check if we really have a physical tool in the spindle
   ;(debug, Read tool status: #5399) 
   
@@ -109,11 +106,12 @@ o200 endif
 
 ; *************** BEGIN LOAD ***************
     (debug, We start loading tool #<_selected_tool>)
-o300 if [#<_selected_tool> GT #<pocket_count>]                   
-    (debug, manual toolchange necessary)
+o300 if [#<_selected_tool> GT #<pocket_count>]   
+		G53 G0 Z[#<safe_z>]		                
+    (debug, manual tool load necessary)
     G53 G0 X[#<manualToolchange_x>] 
     G53 G0 Y[#<manualToolchange_y>]
-    (debug, preparing manual load)
+    (debug, Confirm to start manual loading)
     M0
     G4 P1
     M64 P1
@@ -123,10 +121,12 @@ o300 if [#<_selected_tool> GT #<pocket_count>]
     M64 P0
     G4 P3
     M65 P0
-    (debug, waiting for user input to proceed)
+    (debug, Tool loaded. Confirm to proceed.)
     M0 
-
-  G53 G0 X[#<x_new_tool>] Y[#<pocket_y>] Z[#<z_abovePocket>]
+o300 else
+	(debug, loading a tool with a pocket)
+  G53 G0 X[#<x_new_tool>] Y[#<pocket_y>] 
+  G53 G0 Z[#<z_abovePocket>]
     (debug, Move over pocket #<_selected_tool>)
   G4 P0
     (debug, activate AIR IN)
