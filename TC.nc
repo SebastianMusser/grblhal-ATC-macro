@@ -101,55 +101,57 @@ o300 endif
 ; *************** END UNLOAD ***************
 
 ; *************** BEGIN LOAD ***************
-o400 if [#<_selected_tool> EQ 0]  
+o350 if [#<_selected_tool> EQ 0]  
 	(debug, Tool 0 selected - spindle remains empty. Do Nothing)
-o400 elseif [#<_selected_tool> GT #<pocket_count>]   
-G53 G0 Z[#<safe_z>]		                
-  (debug, manual tool load necessary)
-  G53 G0 X[#<manualToolchange_x>] 
-  G53 G0 Y[#<manualToolchange_y>]
-  (debug, Confirm to start manual loading.....)
-  M0
-  G4 P1
-  M64 P1 
-  G4 P3
-  M65 P1
-  G4 P1
-  M64 P0
-  G4 P3
-  M65 P0
-  (debug, Tool loaded. Confirm to proceed.)
-  M0 
-o400 else
-	(debug, loading a tool with a pocket)
-  G53 G0 X[#<x_new_tool>] Y[#<pocket_y>] 
-  G53 G0 Z[#<z_abovePocket>]
-  (debug, Move over pocket #<_selected_tool>)
-  G4 P0
-  (debug, activate AIR IN)
-  M64 P1 																										;open drawbar
-  G4 P1
-  G53 G1 Z[#<pocket_z>] F[#<pocket_feedrate>] 	
-  G4 P1
-  M65 P1 																										;close drawbar
-  (debug, shut off AIR IN)
-  G4 P0.5
-  (debug, activate AIR RETURN)
-  M64 P0																										;activate air return for x sec
-  G4 P3
-  (debug, shut off AIR RETURN)
-  M65 P0
-  M66 P[#<toolSensor_input>] L0                                       ;read sensor status (0=tool, 1=notool)
-  (debug, Read drawbar sensor input: #5399) 
-      o410 if [#5399 EQ 1]   
-        (debug, Something is wrong - tool check failed. ABORT)
-        M99
-      o410 elseif [#5399 EQ 0]
-        (debug, We have a tool in the spindle. Lets proceed) 
-      o410 endif	
-  G53 G1 Y[#<y_outsidePocket>] F[#<pocket_feedrate>]                  ;leave pocket
+o350 else  
+  o400 if [#<_selected_tool> GT #<pocket_count>]   
+  G53 G0 Z[#<safe_z>]		                
+    (debug, manual tool load necessary)
+    G53 G0 X[#<manualToolchange_x>] 
+    G53 G0 Y[#<manualToolchange_y>]
+    (debug, Confirm to start manual loading.....)
+    M0
+    G4 P1
+    M64 P1 
+    G4 P3
+    M65 P1
+    G4 P1
+    M64 P0
+    G4 P3
+    M65 P0
+    (debug, Tool loaded. Confirm to proceed.)
+    M0 
+  o400 else
+    (debug, loading a tool with a pocket)
+    G53 G0 X[#<x_new_tool>] Y[#<pocket_y>] 
+    G53 G0 Z[#<z_abovePocket>]
+    (debug, Move over pocket #<_selected_tool>)
+    G4 P0
+    (debug, activate AIR IN)
+    M64 P1 																										;open drawbar
+    G4 P1
+    G53 G1 Z[#<pocket_z>] F[#<pocket_feedrate>] 	
+    G4 P1
+    M65 P1 																										;close drawbar
+    (debug, shut off AIR IN)
+    G4 P0.5
+    (debug, activate AIR RETURN)
+    M64 P0																										;activate air return for x sec
+    G4 P3
+    (debug, shut off AIR RETURN)
+    M65 P0
+    M66 P[#<toolSensor_input>] L0                                       ;read sensor status (0=tool, 1=notool)
+    (debug, Read drawbar sensor input: #5399) 
+        o410 if [#5399 EQ 1]   
+          (debug, Something is wrong - tool check failed. ABORT)
+          M99
+        o410 elseif [#5399 EQ 0]
+          (debug, We have a tool in the spindle. Lets proceed) 
+        o410 endif	
+    G53 G1 Y[#<y_outsidePocket>] F[#<pocket_feedrate>]                  ;leave pocket
 
-o400 endif
+  o400 endif
+o350 endif
 
 M61 Q[#<_selected_tool>]
 G4 P0
