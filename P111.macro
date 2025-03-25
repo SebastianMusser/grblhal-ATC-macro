@@ -1,12 +1,12 @@
 ; **************DECLARE VARIABLES *********************************************************
 #<safe_z> = -29                
-#<measure_start_z> = -50         
+#<measure_start_z> = -100         
 #<_seek_distance> = 100 
 #<_seek_feedrate> = 500
 #<_fine_feedrate> = 100
-#<_retract_distance> = 10
-#<measure_x> = -56              ;toolsetter location
-#<measure_y> = -35.7            ;toolsetter location
+#<_retract_distance> = 5
+#<measure_x> = -58              ;toolsetter location
+#<measure_y> = -34.7            ;toolsetter location
 ;*********************************************************************************************
 
 
