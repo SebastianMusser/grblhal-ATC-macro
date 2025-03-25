@@ -155,13 +155,13 @@ o350 endif
 
 M61 Q[#<_selected_tool>]
 G4 P0
-  (debug, Successfully loaded tool #<_current_tool>)
+  (debug, Successfully loaded tool #<_selected_tool>)
 ; *************** END LOAD *****************
 
 ;####################start measure#################
 
 G53 G0 Z[#<safe_z>]		
-
+(debug, we start measuring tool #<_selected_tool>)
 o600 if [#<_selected_tool> NE 0]
   ;  we have a tool.
   ; Remove any G43.1 Z offset
