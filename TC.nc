@@ -103,9 +103,9 @@ o300 endif
 ; *************** BEGIN LOAD ***************
 o400 if [#<_selected_tool> EQ 0]  
     (debug, Tool 0 selected - spindle remains empty. Do Nothing)
-    M61 Q[#<_selected_tool>]
+    M61 Q0
 o400 else
-  o450 if [#<_selected_tool> GT #<pocket_count>]   
+  o420 if [#<_selected_tool> GT #<pocket_count>]   
     G53 G0 Z[#<safe_z>]		                
     (debug, manual tool load necessary)
     G53 G0 X[#<manualToolchange_x>] 
@@ -122,7 +122,7 @@ o400 else
     M65 P0
     (debug, Tool loaded. Confirm to proceed.)
     M0 
-  o450 else
+  o420 else
     (debug, loading a tool with a pocket)
     G53 G0 X[#<x_new_tool>] Y[#<pocket_y>] 
     G53 G0 Z[#<z_abovePocket>]
@@ -143,61 +143,60 @@ o400 else
     M65 P0
     M66 P[#<toolSensor_input>] L0                                       ;read sensor status (0=tool, 1=notool)
     (debug, Read drawbar sensor input: #5399) 
-        o460 if [#5399 EQ 1]   
+        o421 if [#5399 EQ 1]   
           (debug, Something is wrong - tool check failed. ABORT)
           M99
-        o460 elseif [#5399 EQ 0]
+        o421 elseif [#5399 EQ 0]
           (debug, We have a tool in the spindle. Lets proceed) 
-        o460 endif	
+        o421 endif	
     G53 G1 Y[#<y_outsidePocket>] F[#<pocket_feedrate>]                  ;leave pocket
-  o450 endif
-o400 endif
-
-M61 Q[#<_selected_tool>]
-G4 P0
-  (debug, Successfully loaded tool #<_selected_tool>)
-; *************** END LOAD *****************
-
-;####################start measure#################
-G53 G0 Z[#<safe_z>]		
-(debug, we start measuring tool #<_selected_tool>)
-o600 if [#<_selected_tool> NE 0]
-    G43.1 Z0                             ; Remove any G43.1 Z offset
-    (debug, G43.1 Z offset removed)
-    o610 if [#5220 EQ 1]
-      #<_z_offset> = [#5213 + #5223]
-    o610 elseif [#5220 EQ 2]
-      #<_z_offset> = [#5213 + #5243]
-    o610 elseif [#5220 EQ 3]
-      #<_z_offset> = [#5213 + #5263]
-    o610 elseif [#5220 EQ 4]
-      #<_z_offset> = [#5213 + #5283]
-    o610 elseif [#5220 EQ 5]
-      #<_z_offset> = [#5213 + #5303]
-    o610 elseif [#5220 EQ 6]
-      #<_z_offset> = [#5213 + #5323]
-    o610 elseif [#5220 EQ 7]
-      #<_z_offset> = [#5213 + #5343]
-    o610 elseif [#5220 EQ 8]
-      #<_z_offset> = [#5213 + #5363]
-    o610 elseif [#5220 EQ 9]
-      #<_z_offset> = [#5213 + #5383]
-    o610 endif
-
-    G53 G90 G0 Z[#<safe_z>]
-    G53 G0 X[#<toolsetter_x>] Y[#<toolsetter_y>]
-    G53 G0 Z[#<measure_start_z>]
-    G38.2 G91 Z[#<_seek_distance> * -1] F[#<_seek_feedrate>]
-    G0 G91 Z[#<_retract_distance>]
-    G38.2 G91 Z[[#<_retract_distance> + 1] * -1] F[#<_fine_feedrate>]
-    G53 G0 G90 Z[#<safe_z>]
-    #<_adjust_z> = [#5063 + #<_z_offset>]
+  o420 endif
+    M61 Q[#<_selected_tool>]
     G4 P0
-      G43.1 Z[#<_adjust_z>]
-    $TLR
-    (debug, TLR set)
-o600 else
-  (debug, Tool 0 ... measurement disabled)
-o600 endif
-; ************* END MEASURE ****************
+      (debug, Successfully loaded tool #<_selected_tool>)
+    ; *************** END LOAD *****************
+
+    ;####################start measure#################
+    G53 G0 Z[#<safe_z>]		
+    (debug, we start measuring tool #<_selected_tool>)
+    o450 if [#<_selected_tool> NE 0]
+        G43.1 Z0                             ; Remove any G43.1 Z offset
+        (debug, G43.1 Z offset removed)
+        o455 if [#5220 EQ 1]
+          #<_z_offset> = [#5213 + #5223]
+        o455 elseif [#5220 EQ 2]
+          #<_z_offset> = [#5213 + #5243]
+        o455 elseif [#5220 EQ 3]
+          #<_z_offset> = [#5213 + #5263]
+        o455 elseif [#5220 EQ 4]
+          #<_z_offset> = [#5213 + #5283]
+        o455 elseif [#5220 EQ 5]
+          #<_z_offset> = [#5213 + #5303]
+        o455 elseif [#5220 EQ 6]
+          #<_z_offset> = [#5213 + #5323]
+        o455 elseif [#5220 EQ 7]
+          #<_z_offset> = [#5213 + #5343]
+        o455 elseif [#5220 EQ 8]
+          #<_z_offset> = [#5213 + #5363]
+        o455 elseif [#5220 EQ 9]
+          #<_z_offset> = [#5213 + #5383]
+        o455 endif
+
+        G53 G90 G0 Z[#<safe_z>]
+        G53 G0 X[#<toolsetter_x>] Y[#<toolsetter_y>]
+        G53 G0 Z[#<measure_start_z>]
+        G38.2 G91 Z[#<_seek_distance> * -1] F[#<_seek_feedrate>]
+        G0 G91 Z[#<_retract_distance>]
+        G38.2 G91 Z[[#<_retract_distance> + 1] * -1] F[#<_fine_feedrate>]
+        G53 G0 G90 Z[#<safe_z>]
+        #<_adjust_z> = [#5063 + #<_z_offset>]
+        G4 P0
+          G43.1 Z[#<_adjust_z>]
+        $TLR
+        (debug, TLR set)
+    o450 else
+      (debug, Tool 0 ... measurement disabled)
+    o450 endif
+    ; ************* END MEASURE ****************
+o400 endif
 G53 G0 Z[#<safe_z>]		
