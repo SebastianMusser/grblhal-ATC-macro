@@ -52,7 +52,9 @@ G53 G0 Z[#<safe_z>]
 
 ; ************** BEGIN UNLOAD **************
 M66 P[#<toolSensor_input>] L0                                       ;check if we really have a physical tool in the spindle
-o200 if [#5399 EQ 1]                                                ;nur wenn wir auch wirklich ein tool geladen haben
+o200 if [#<_current_tool> EQ 0]
+(debug, do nothing)
+o200 elseif [#5399 EQ 1]                                                ;nur wenn wir auch wirklich ein tool geladen haben
   (debug, There is no tool in the spindle but we are trying to unload.... ABORT)
   M0
   M99 
@@ -60,7 +62,9 @@ o200 elseif  [#5399 EQ 0]
   (debug, Tool in spindle validated. Lets proceed)    
 o200 endif
 
-o300 if [#<_current_tool> GT #<pocket_count>]                   
+o300 if [#<_current_tool> EQ 0]
+(debug, do nothing)
+o300 elseif [#<_current_tool> GT #<pocket_count>]                   
     (debug, We have a tool without slot - manual unload necessary)
     G53 G0 X[#<manualToolchange_x>] Y[#<manualToolchange_y>]
     (debug, Confirm to start manual unloading)
