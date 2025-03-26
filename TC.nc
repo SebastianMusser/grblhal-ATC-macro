@@ -40,7 +40,6 @@ o100 endif
 ;**************END VALIDATION *****************************************************************
 
 ;************** BEGIN SETUP *********************************************************************
-
 M5																												;Turn off spindle and coolant
 M9
 G90  																											;Activate absolute distance mode
@@ -54,7 +53,7 @@ G53 G0 Z[#<safe_z>]
 M66 P[#<toolSensor_input>] L0                                       ;check if we really have a physical tool in the spindle
 o200 if [#<_current_tool> EQ 0]
 (debug, do nothing)
-o200 elseif [#5399 EQ 1]                                                ;nur wenn wir auch wirklich ein tool geladen haben
+o200 elseif [#5399 EQ 1]                                             
   (debug, There is no tool in the spindle but we are trying to unload.... ABORT)
   M0
   M99 
