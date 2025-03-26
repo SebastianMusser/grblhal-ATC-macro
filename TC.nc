@@ -167,7 +167,6 @@ o400 else
     ;####################start measure#################
     G53 G0 Z[#<safe_z>]		
     (debug, we start measuring tool #<_selected_tool>)
-    o450 if [#<_selected_tool> NE 0]
         G43.1 Z0                             ; Remove any G43.1 Z offset
         (debug, G43.1 Z offset removed)
         o455 if [#5220 EQ 1]
@@ -202,9 +201,6 @@ o400 else
           G43.1 Z[#<_adjust_z>]
         $TLR
         (debug, TLR set)
-    o450 else
-      (debug, Tool 0 ... measurement disabled)
-    o450 endif
     ; ************* END MEASURE ****************
 o400 endif
 G53 G0 Z[#<safe_z>]		
