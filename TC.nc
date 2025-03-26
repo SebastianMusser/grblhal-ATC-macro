@@ -85,18 +85,24 @@ o300 else
     M64 P1                                                             ;release tool
     (debug, activate AIR IN)
     G4 P1                                                               ;wait a second for pressure to build up
-    M66 P[#<drawbarSensor_input>] L0                                       ;read sensor status (0=tool, 1=notool)
+    M66 P[#<drawbarSensor_input>] L0                                       ;read drawbar status (0=activated, 1=not activated)
     (debug, Read drawbar sensor input: #5399) 	
       o320 if [#5399 EQ 1]   
         (debug, something is wrong - drawbar not activated. ABORT)
-        ;M99
+        M99
       o320 elseif [#5399 EQ 0]
         (debug, drawbar actuated. Lets proceed) 
       o320 endif																						
     G53 G0 Z[#<z_abovePocket>] ;F[#<pocket_feedrate>]										;move spindle up - away from tool
     G4 P0
-    M65 P1																										;close valve
-		(debug, shut off AIR IN)
+    M65 P1																										          ;close valve
+    M66 P[#<toolSensor_input>] L0                                       ;read tool status (0=tool, 1=notool)
+      o330 if [#5399 EQ 0]   
+        (debug, something is wrong - We still have a tool. ABORT)
+        M99
+      o330 elseif [#5399 EQ 1]
+        (debug, Spindle-unload confirmed. Lets proceed) 
+      o330 endif																						
 o300 endif 
 ; *************** END UNLOAD ***************
 
@@ -131,24 +137,28 @@ o400 else
     (debug, activate AIR IN)
     M64 P1 																										;open drawbar
     G4 P1
+     M66 P[#<drawbarSensor_input>] L0                                       ;read drawbar status (0=activated, 1=not activated)
+    (debug, Read drawbar sensor input: #5399) 	
+      o421 if [#5399 EQ 1]   
+        (debug, something is wrong - drawbar not activated. ABORT)
+        M99
+      o421 elseif [#5399 EQ 0]
+        (debug, drawbar actuated. Lets proceed) 
+      o421 endif																					
     G53 G1 Z[#<pocket_z>] F[#<pocket_feedrate>] 	
     G4 P1
     M65 P1 																										;close drawbar
-    (debug, shut off AIR IN)
     G4 P0.5
-    (debug, activate AIR RETURN)
     M64 P0																										;activate air return for x sec
     G4 P3
-    (debug, shut off AIR RETURN)
     M65 P0
     M66 P[#<toolSensor_input>] L0                                       ;read sensor status (0=tool, 1=notool)
-    (debug, Read drawbar sensor input: #5399) 
-        o421 if [#5399 EQ 1]   
+        o422 if [#5399 EQ 1]   
           (debug, Something is wrong - tool check failed. ABORT)
           M99
-        o421 elseif [#5399 EQ 0]
+        o422 elseif [#5399 EQ 0]
           (debug, We have a tool in the spindle. Lets proceed) 
-        o421 endif	
+        o422 endif	
     G53 G1 Y[#<y_outsidePocket>] F[#<pocket_feedrate>]                  ;leave pocket
   o420 endif
     M61 Q[#<_selected_tool>]
