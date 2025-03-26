@@ -52,7 +52,7 @@ G53 G0 Z[#<safe_z>]
 ; ************** BEGIN UNLOAD **************
 M66 P[#<toolSensor_input>] L0                                       ;check if we really have a physical tool in the spindle
 o200 if [#<_current_tool> EQ 0]
-(debug, do nothing)
+  (debug, do nothing)
 o200 elseif [#5399 EQ 1]                                             
   (debug, There is no tool in the spindle but we are trying to unload.... ABORT)
   M0
@@ -62,7 +62,7 @@ o200 elseif  [#5399 EQ 0]
 o200 endif
 
 o300 if [#<_current_tool> EQ 0]
-(debug, do nothing)
+    (debug, do nothing)
 o300 elseif [#<_current_tool> GT #<pocket_count>]                   
     (debug, We have a tool without slot - manual unload necessary)
     G53 G0 X[#<manualToolchange_x>] Y[#<manualToolchange_y>]
@@ -75,7 +75,7 @@ o300 elseif [#<_current_tool> GT #<pocket_count>]
     (debug, Tool unloaded. Confirm to proceed)
     M0 
 o300 else           
-  (debug, Unloading tool with pocket)
+    (debug, Unloading tool with pocket)
     G53 G0 X[#<x_current_tool>] 
     G53 G0 Y[#<y_outsidePocket>] 
     G53 G0 Z[#<pocket_z>]  
@@ -85,7 +85,6 @@ o300 else
     (debug, activate AIR IN)
     G4 P1                                                               ;wait a second for pressure to build up
     M66 P[#<drawbarSensor_input>] L0                                       ;read drawbar status (0=activated, 1=not activated)
-    (debug, Read drawbar sensor input: #5399) 	
       o320 if [#5399 EQ 1]   
         (debug, something is wrong - drawbar not activated. ABORT)
         M99
@@ -110,7 +109,7 @@ o400 if [#<_selected_tool> EQ 0]
     (debug, Tool 0 selected - spindle remains empty. Do Nothing)
     M61 Q0
 o400 else
-  o420 if [#<_selected_tool> GT #<pocket_count>]   
+  o420 if [#<_selected_tool> GT #<pocket_count>]   ;start manual load
     G53 G0 Z[#<safe_z>]		                
     (debug, manual tool load necessary)
     G53 G0 X[#<manualToolchange_x>] 
