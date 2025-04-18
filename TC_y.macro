@@ -1,12 +1,12 @@
 ; ************** 	DECLARE VARIABLES *********************************************************
-#<y_travel_pocket> = 55				      ;x travel into or out of pocket
+#<x_travel_pocket> = 55				      ;x travel into or out of pocket
 #<z_travel_pocket> = 50				      ;z travel to tool / from tool
 #<pocket_feedrate> = 1000           ;feedrate to enter / leave pockets
 #<safe_z> = -29
 #<pocket_offset> =	52.833						;distance of pockets in X direction
-#<pocket_one_x> = -799.490							;x position of first slot
-#<pocket_y> = -74.060									;Y position of slot
-#<pocket_z> = -195.196									;z position of slots
+#<pocket_one_y> = -664.330							;x position of first slot
+#<pocket_x> = -934.050									;Y position of slot
+#<pocket_z> = -177.364									;z position of slots
 #<pocket_count> = 5
 #<toolSensor_input> = 1               ;results: 0=tool, 1=notool 
 #<drawbarSensor_input> = 2            ;results: 0=activated/pressurized 1=not activated
@@ -20,7 +20,7 @@
 #<toolsetter_x> = -58                 ;toolsetter location
 #<toolsetter_y> = -34.7               ;toolsetter location
 
-#<y_outsidePocket> = [#<pocket_y> - #<y_travel_pocket>]      ;calculate position in front of pocket
+#<x_outsidePocket> = [#<pocket_x> - #<x_travel_pocket>]      ;calculate position in front of pocket
 #<z_abovePocket> = [#<pocket_z> + #<z_travel_pocket>]         ;calculate position above pocket
 ;*********************************************************************************************
 
@@ -44,8 +44,8 @@ M5																												;Turn off spindle and coolant
 M9
 G90  																											;Activate absolute distance mode
 ;calculate tool locations
-#<x_new_tool> = [[[#<_selected_tool> - 1] * #<pocket_offset> ] + #<pocket_one_x>]
-#<x_current_tool> = [[[#<_current_tool> - 1] * #<pocket_offset> ] + #<pocket_one_x>]
+#<y_new_tool> = [[[#<_selected_tool> - 1] * #<pocket_offset> ] + #<pocket_one_y>]
+#<y_current_tool> = [[[#<_current_tool> - 1] * #<pocket_offset> ] + #<pocket_one_y>]
 G53 G0 Z[#<safe_z>]	
 ;*************** END SETUP ****************
 
@@ -79,7 +79,7 @@ o300 else
     G53 G0 X[#<x_current_tool>] 
     G53 G0 Y[#<y_outsidePocket>] 
     G53 G0 Z[#<pocket_z>]  
-    G53 G1 Y[#<pocket_y>]  F[#<pocket_feedrate>]						          	;move into pocket
+    G53 G1 X[#<pocket_x>]  F[#<pocket_feedrate>]						          	;move into pocket
     G4 P0
     M64 P1                                                             ;release tool
     (debug, activate AIR IN)
@@ -157,7 +157,7 @@ o400 else
         o422 elseif [#5399 EQ 0]
           (debug, We have a tool in the spindle. Lets proceed) 
         o422 endif	
-    G53 G1 Y[#<y_outsidePocket>] F[#<pocket_feedrate>]                  ;leave pocket
+    G53 G1 X[#<x_outsidePocket>] F[#<pocket_feedrate>]                  ;leave pocket
   o420 endif
     M61 Q[#<_selected_tool>]
     G4 P0
