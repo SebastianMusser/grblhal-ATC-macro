@@ -20,7 +20,7 @@
 #<toolsetter_x> = -58                 ;toolsetter location
 #<toolsetter_y> = -34.7               ;toolsetter location
 
-#<x_outsidePocket> = [#<pocket_x> - #<x_travel_pocket>]      ;calculate position in front of pocket
+#<x_outsidePocket> = [#<pocket_x> + #<x_travel_pocket>]      ;calculate position in front of pocket
 #<z_abovePocket> = [#<pocket_z> + #<z_travel_pocket>]         ;calculate position above pocket
 ;*********************************************************************************************
 
