@@ -1,9 +1,9 @@
 ; ************** 	DECLARE VARIABLES *********************************************************
-#<y_travel_pocket> = 55				      ;y travel in or out of pocket
+#<y_travel_pocket> = 55				      ;x travel into or out of pocket
 #<z_travel_pocket> = 50				      ;z travel to tool / from tool
 #<pocket_feedrate> = 1000           ;feedrate to enter / leave pockets
 #<safe_z> = -29
-#<pocket_offset> =	61.2						;distance of pockets in X direction
+#<pocket_offset> =	52.833						;distance of pockets in X direction
 #<pocket_one_x> = -799.490							;x position of first slot
 #<pocket_y> = -74.060									;Y position of slot
 #<pocket_z> = -195.196									;z position of slots
